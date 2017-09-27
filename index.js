@@ -257,18 +257,40 @@ export default class Camera extends Component {
     }
     return CameraManager.hasFlash();
   }
+
+  freezeCapture(){
+    if (Platform.OS === 'ios') 
+      return CameraManager.freezeCapture();
+  }
+
+  unfreezeCapture(){
+    if (Platform.OS === 'ios')
+      return CameraManager.unfreezeCapture();
+  }
+
+  addObserver(handler){
+
+    const observer = Platform.select({
+      ios: NativeAppEventEmitter.once('CameraBarCodeRead', handler),
+      android: DeviceEventEmitter.once('CameraBarCodeReadAndroid',  handler)
+    })
+
+    return observer;
+    
+  }
+
 }
 
 export const constants = Camera.constants;
 
 const RCTCamera = requireNativeComponent('RCTCamera', Camera, {nativeOnly: {
-  testID: true,
-  renderToHardwareTextureAndroid: true,
-  accessibilityLabel: true,
-  importantForAccessibility: true,
-  accessibilityLiveRegion: true,
-  accessibilityComponentType: true,
-  onLayout: true
+    testID: true,
+    renderToHardwareTextureAndroid: true,
+    accessibilityLabel: true,
+    importantForAccessibility: true,
+    accessibilityLiveRegion: true,
+    accessibilityComponentType: true,
+    onLayout: true
 }});
 
 const styles = StyleSheet.create({
